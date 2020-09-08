@@ -1,0 +1,1 @@
+# infobip_test_stockprice_rest_pipeline

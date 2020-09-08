@@ -1,0 +1,50 @@
+{
+	"name": "ds_adb_fact_stock_price",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adb_infobip_test",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "symbol",
+				"type": "varchar"
+			},
+			{
+				"name": "data_date",
+				"type": "date"
+			},
+			{
+				"name": "open_value",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "close_value",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "high_value",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "low_value",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "fact_stock_price"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

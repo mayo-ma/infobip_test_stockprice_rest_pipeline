@@ -1,0 +1,138 @@
+{
+	"name": "plSyncRestData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Move Rest Data to Azure DB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table dbo.fact_stock_price",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['open']"
+								},
+								"sink": {
+									"name": "open_value",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "['high']"
+								},
+								"sink": {
+									"name": "high_value",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "['low']"
+								},
+								"sink": {
+									"name": "low_value",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "['close']"
+								},
+								"sink": {
+									"name": "close_value",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "['symbol']"
+								},
+								"sink": {
+									"name": "symbol",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['date']"
+								},
+								"sink": {
+									"name": "data_date",
+									"type": "DateTime"
+								}
+							}
+						],
+						"collectionReference": "$['data']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_rest_marketstack",
+						"type": "DatasetReference",
+						"parameters": {
+							"date_from": {
+								"value": "@addToTime(utcnow(), mul(pipeline().parameters.yearSpan, -1), 'Year')",
+								"type": "Expression"
+							},
+							"date_to": {
+								"value": "@formatDateTime(utcnow(), 'yyyy-MM-dd')",
+								"type": "Expression"
+							},
+							"symbols": {
+								"value": "@pipeline().parameters.symbols",
+								"type": "Expression"
+							},
+							"accessKey": {
+								"value": "@pipeline().parameters.accessKey",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adb_fact_stock_price",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"accessKey": {
+				"type": "string"
+			},
+			"symbols": {
+				"type": "string"
+			},
+			"yearSpan": {
+				"type": "int"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-09-07T23:05:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
